@@ -12,6 +12,12 @@ static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), './'
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 #disable cache
 
+@app.after_request
+def apply_seo_headers(response):
+    # Force indexable directives in case an upstream default adds noindex/nofollow.
+    response.headers['X-Robots-Tag'] = 'index, follow, max-image-preview:large'
+    return response
+
 # Serving the index file
 @app.route('/', methods=['GET'])
 def serve_dir_directory_index():
